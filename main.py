@@ -42,4 +42,22 @@ while len(comments) < 600:
     if not nextPageToken:
         break
 
-print(comments[:5])
+comments[:5]
+
+hyperlink_pattern = re.compile(
+    r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+threshold_ratio = 0.65
+relevant_comments = []
+
+for comment_text in comments:
+    comment_text = comment_text.lower().strip()
+    emojis = emoji.emoji_count(comment_text)
+
+    text_characters = len(re.sub(r'\s', '', comment_text))
+
+    if (any(char.isalnum() for char in comment_text) and not hyperlink_pattern.search(comment_text)):
+        if emojis == 0 or (text_characters / (text_characters + emojis)) > threshold_ratio:
+            relevant_comments.append(comment_text)
+
+print(relevant_comments)
