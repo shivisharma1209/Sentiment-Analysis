@@ -99,3 +99,16 @@ for index, items in enumerate(comments):
         neutral_comments.append(items)
 
 print(polarity[:8])
+
+# overall polarity
+avg_polarity = sum(polarity)/len(polarity)
+if avg_polarity > 0.05:
+    print("The video has a positive response by the viewers.")
+elif avg_polarity < 0.05:
+    print("The video has a negative response by the viewers.")
+else:
+    print("The video has a neutral response by the viewers.")
+
+print("The comment with the most positive sentiment is \"", comments[polarity.index(max(polarity))], "\" with score", max(polarity), "and length", len(comments[polarity.index(max(polarity))]))
+
+print("The comment with most negative sentiment is \"", comments[polarity.index(min(polarity))], "\" with score", min(polarity), "and length", len(comments[polarity.index(min(polarity))]))
