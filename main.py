@@ -25,6 +25,7 @@ print("Fetching Comments..")
 comments = []
 nextPageToken = None
 
+# fetch comments
 while len(comments) < 600:
     request = youtube.commentThreads().list(
         part = 'snippet',
@@ -44,6 +45,7 @@ while len(comments) < 600:
 
 comments[:5]
 
+# filter comments
 hyperlink_pattern = re.compile(
     r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
@@ -62,8 +64,38 @@ for comment_text in comments:
 
 print(relevant_comments)
 
+# store comments
 f = open("ytcomments.txt", 'w', encoding='utf-8')
-for idx, comments in enumerate(relevant_comments):
+for idx, comment in enumerate(relevant_comments):
     f.write(str(comment)+"\n")
 f.close()
 print("Comments Stored Succesfully!")
+
+# analyse comments
+def sentiment_scores(comment, polarity):
+    sentiment_obj = SentimentIntensityAnalyzer()
+    sentiment_dict = sentiment_obj.polarity_scores(comment)
+    polarity.append(sentiment_dict['compound'])
+    return polarity
+
+polarity = []
+positive_comments = []
+negative_comments = []
+neutral_comments = []
+
+f = open("ytcomments.txt", 'r', encoding='`utf-8')
+comments = f.readlines()
+f.close()
+
+print("Analysing Comments...")
+for index, items in enumerate(comments):
+    polarity = sentiment_scores(items, polarity)
+
+    if polarity[-1] > 0.05:
+        positive_comments.append(items)
+    elif polarity[-1] < 0.05:
+        negative_comments.append(items)
+    else:
+        neutral_comments.append(items)
+
+print(polarity[:8])
