@@ -61,3 +61,9 @@ for comment_text in comments:
             relevant_comments.append(comment_text)
 
 print(relevant_comments)
+
+f = open("ytcomments.txt", 'w', encoding='utf-8')
+for idx, comments in enumerate(relevant_comments):
+    f.write(str(comment)+"\n")
+f.close()
+print("Comments Stored Succesfully!")
